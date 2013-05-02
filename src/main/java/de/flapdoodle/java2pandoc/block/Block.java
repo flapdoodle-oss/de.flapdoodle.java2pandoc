@@ -48,7 +48,7 @@ public class Block {
 		for (String line : lines) {
 			if (line.length()>positions) {
 				String removed=line.substring(0,positions);
-				if (removed.trim().isEmpty()) throw new ParseException("Could not shift line "+positions+" to the left: '"+line+"'", 0);
+				if (!removed.trim().isEmpty()) throw new ParseException("Could not shift line "+positions+" to the left: '"+line+"'", 0);
 				ret.add(line.substring(positions));
 			} else {
 				if (!line.trim().isEmpty()) throw new ParseException("Could not shift line "+positions+" to the left: '"+line+"'", 0);
