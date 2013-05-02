@@ -43,8 +43,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.5.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.6</source>
+					<target>1.6</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
@@ -116,7 +116,7 @@
 						<lic.username>Michael Mosmann</lic.username>
 						<lic.email2 />
 						<lic.username2 />
-						<lic.developers />
+						<lic.developers>-</lic.developers>
 					</properties>
 					<encoding>UTF-8</encoding>
 					<!-- <headerDefinitions> <headerDefinition>def1.xml</headerDefinition> 
