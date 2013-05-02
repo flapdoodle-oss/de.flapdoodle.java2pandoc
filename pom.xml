@@ -12,7 +12,7 @@
 	<groupId>de.flapdoodle</groupId>
 	<artifactId>de.flapdoodle.java2pandoc</artifactId>
 	<name>Flapdoodle Java to Pandoc Converter</name>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 
 	<description>read java source files and process it to pandoc</description>
 	<url>http://github.com/flapdoodle-oss/de.flapdoodle.java2pandoc</url>
