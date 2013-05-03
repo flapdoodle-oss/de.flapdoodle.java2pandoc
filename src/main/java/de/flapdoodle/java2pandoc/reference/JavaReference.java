@@ -26,17 +26,11 @@ import javax.annotation.concurrent.Immutable;
 
 import com.google.common.base.Optional;
 
-import de.flapdoodle.java2pandoc.sample.Book;
-
 /**
  * a reference which to a file and some anchors
- * 
  * a.java.class.in.a.package.JavaClass#method(int)
  * 
- * {@link Book#methodContent(int)}
- * 
  * @author mosmann
- * @see Book#methodContent(int)
  */
 @Immutable
 public class JavaReference implements IReference<JavaReference> {
@@ -52,9 +46,9 @@ public class JavaReference implements IReference<JavaReference> {
 	private final MethodReference _method;
 
 	public JavaReference(String clazz) {
-		this(clazz,null);
+		this(clazz, null);
 	}
-	
+
 	public JavaReference(String clazz, MethodReference method) {
 		_clazz = clazz;
 		_method = method;
@@ -67,9 +61,9 @@ public class JavaReference implements IReference<JavaReference> {
 	public MethodReference method() {
 		return _method;
 	}
-	
+
 	public FileReference asFileReference() {
-		return FileReference.fromString(_clazz.replace('.', '/')+".java", '/');
+		return FileReference.fromString(_clazz.replace('.', '/') + ".java", '/');
 	}
 
 	@Override
@@ -123,15 +117,15 @@ public class JavaReference implements IReference<JavaReference> {
 			String methodName = matcher.group("method");
 			String params = matcher.group("params");
 			String classname = matcher.group("class");
-			
+
 			if (methodName != null) {
 				return Optional.of(new JavaReference(classname, new MethodReference(methodName, params)));
 			}
-			
+
 			if (params != null) {
 				throw new IllegalArgumentException("not method name but params? whats wrong??: " + refAsString);
 			}
-			
+
 			return Optional.of(new JavaReference(classname, null));
 		}
 
