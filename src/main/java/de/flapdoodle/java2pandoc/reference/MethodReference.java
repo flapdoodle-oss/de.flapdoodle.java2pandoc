@@ -1,32 +1,39 @@
 package de.flapdoodle.java2pandoc.reference;
 
+import java.util.Arrays;
+
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
 @Immutable
 public class MethodReference {
 
 	private final String _name;
-	private final String _params;
+	private final ImmutableList<String> _params;
 
 	public MethodReference(String name, String params) {
 		Preconditions.checkNotNull(name, "name is null");
 		_name = name;
-		_params = params;
+		_params = params != null
+				? ImmutableList.copyOf(Arrays.asList(params.split("[\\s,]+")))
+				: ImmutableList.<String>of();
 	}
 
 	public String name() {
 		return _name;
 	}
 
-	public String params() {
+	public ImmutableList<String> params() {
 		return _params;
 	}
-	
+
 	@Override
 	public String toString() {
-		return _name+(_params!=null ? "("+_params+")" : "");
+		return _name + (_params != null
+				? "(" + _params + ")"
+				: "");
 	}
 
 	@Override

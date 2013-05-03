@@ -66,17 +66,13 @@ public class TestMarkedBlockLineProcessor {
 		blockLineProcessor.process(" // this line too");
 		blockLineProcessor.process(" // <--");
 
-		assertEquals(3,blockProcessor.blocks().size());
-		Block block1 = blockProcessor.blocks().get(0);
-		Block block2 = blockProcessor.blocks().get(1);
-		Block block3 = blockProcessor.blocks().get(2);
-		assertNotNull(block1);
-		assertNotNull(block2);
-		assertNotNull(block3);
-		assertEquals("// shift one left",block1.lines().get(0));
-		assertEquals("	// shift one left (embedded)",block2.lines().get(0));
-		assertEquals("	// this line too (embedded)",block2.lines().get(1));
-		assertEquals("// this line too",block3.lines().get(0));
+		assertEquals(1,blockProcessor.blocks().size());
+		Block block = blockProcessor.blocks().get(0);
+		assertNotNull(block);
+		assertEquals("// shift one left",block.lines().get(0));
+		assertEquals("	// shift one left (embedded)",block.lines().get(1));
+		assertEquals("	// this line too (embedded)",block.lines().get(2));
+		assertEquals("// this line too",block.lines().get(3));
 	}
 	
 	static class CollectingBlockProcessor implements IBlockProcessor {

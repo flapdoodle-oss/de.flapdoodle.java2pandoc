@@ -19,6 +19,11 @@
  */
 package de.flapdoodle.java2pandoc.sample;
 
+import java.util.List;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+
 /*
  * -->
  * % Headline
@@ -28,17 +33,17 @@ package de.flapdoodle.java2pandoc.sample;
  */
 public class Book {
 
-	// -->
 	/**
 	 * 
 	 * @param d
 	 *          a not so big value
 	 */
+	// -->
 	public void methodContent(int d) {
-		// -->
+		// <--
 		int a = 2;
 		int b = a * 3;
-		// <--
+		// -->
 	}
 
 	// <--
@@ -67,6 +72,22 @@ public class Book {
 
 		// -->
 		return -1;
+	}
+
+	// <--
+
+	// -->
+	/**
+	 * a javadoc
+	 * 
+	 * @param list
+	 *          list
+	 * @param dummy
+	 *          does not mean anything
+	 * @return useless stuff
+	 */
+	public List<String> sort(List<String> list, Optional<String> dummy) {
+		return Lists.newArrayList();
 	}
 	// <--
 }

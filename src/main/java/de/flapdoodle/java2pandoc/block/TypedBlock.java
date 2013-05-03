@@ -27,7 +27,7 @@ public class TypedBlock {
 	private final Type _type;
 	private final Block _block;
 
-	static enum Type {
+	public static enum Type {
 		Code,
 		Text
 	}

@@ -27,6 +27,7 @@ import java.util.List;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
+import de.flapdoodle.java2pandoc.exceptions.BlockProcessingException;
 import de.flapdoodle.java2pandoc.line.ILineProcessor;
 import de.flapdoodle.java2pandoc.line.matcher.ILineMatcher;
 import de.flapdoodle.java2pandoc.line.matcher.LineMatch;
@@ -49,22 +50,25 @@ public class MarkedBlockLineProcessor implements ILineProcessor {
 	}
 
 	@Override
-	public void process(String line) throws ParseException {
+	public void process(String line) {
 		Optional<LineMatch> startMatch = _startMark.match(line);
 		if (startMatch.isPresent()) {
-			if (_collectLines)
-				throw new ParseException("block allready started: " + line, 0);
+			if (_collectLines) {
+				throw new BlockProcessingException("block allready started: " + line);
+			}
 			_collectLines = true;
 			_indent = startMatch.get().indent();
 		} else {
 			Optional<LineMatch> endMatch = _endMark.match(line);
 			if (endMatch.isPresent()) {
-				if (!_collectLines)
-					throw new ParseException("block allready closed: " + line, 0);
+
+				if (!_collectLines) {
+					throw new BlockProcessingException("block allready closed: " + line);
+				}
 				_collectLines = false;
 
-				int indentBlock = baseIndentation(_indents,_indent);
-				
+				int indentBlock = baseIndentation(_indents, _indent);
+
 				BlockIndent currentBlockIndent = new BlockIndent(_indent, endMatch.get().indent());
 				if (currentBlockIndent.indentationLeft()) {
 					_indents.push(currentBlockIndent);
@@ -72,15 +76,17 @@ public class MarkedBlockLineProcessor implements ILineProcessor {
 					if (currentBlockIndent.indentationReduced()) {
 						BlockIndent removed = _indents.pop();
 						if (!removed.inverse(currentBlockIndent)) {
-							throw new ParseException("", 0);
+							throw new BlockProcessingException("Indentation does not match " + removed + " ? " + currentBlockIndent);
 						}
 					}
 				}
 
-				Block block = new Block(_collectedLines).shiftLeft(indentBlock);
-				_collectedLines = Lists.newArrayList();
+				if (_indents.isEmpty()) {
+					Block block = new Block(_collectedLines).shiftLeft(indentBlock);
+					_collectedLines = Lists.newArrayList();
 
-				_blockProcessor.process(block);
+					_blockProcessor.process(block);
+				}
 			} else {
 				if (_collectLines)
 					_collectedLines.add(line);
@@ -90,7 +96,7 @@ public class MarkedBlockLineProcessor implements ILineProcessor {
 
 	private static int baseIndentation(Deque<BlockIndent> indents, int indent) {
 		BlockIndent topMost = indents.peekLast();
-		if (topMost!=null) {
+		if (topMost != null) {
 			return topMost.start();
 		}
 		return indent;

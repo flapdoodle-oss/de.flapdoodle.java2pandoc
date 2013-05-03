@@ -29,6 +29,8 @@ import javax.annotation.concurrent.Immutable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import de.flapdoodle.java2pandoc.exceptions.BlockProcessingException;
+
 @Immutable
 public class Block {
 	
@@ -43,15 +45,15 @@ public class Block {
 		return lines;
 	}
 
-	public Block shiftLeft(int positions) throws ParseException {
+	public Block shiftLeft(int positions) throws BlockProcessingException {
 		List<String> ret=Lists.newArrayList();
 		for (String line : lines) {
 			if (line.length()>positions) {
 				String removed=line.substring(0,positions);
-				if (!removed.trim().isEmpty()) throw new ParseException("Could not shift line "+positions+" to the left: '"+line+"'", 0);
+				if (!removed.trim().isEmpty()) throw new BlockProcessingException("Could not shift line "+positions+" to the left: '"+line+"'");
 				ret.add(line.substring(positions));
 			} else {
-				if (!line.trim().isEmpty()) throw new ParseException("Could not shift line "+positions+" to the left: '"+line+"'", 0);
+				if (!line.trim().isEmpty()) throw new BlockProcessingException("Could not shift line "+positions+" to the left: '"+line+"'");
 				ret.add("");
 			}
 		}

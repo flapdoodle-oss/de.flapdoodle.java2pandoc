@@ -20,7 +20,7 @@ import de.flapdoodle.java2pandoc.sample.Book;
  * @see Book#methodContent(int)
  */
 @Immutable
-public class JavaReference {
+public class JavaReference implements IReference<JavaReference> {
 
 	private static final String JAVA_NAME = "[a-zA-Z]+[a-zA-Z0-9\\$]*";
 	private static final String JAVA_CLASSNAME = JAVA_NAME + "(\\." + JAVA_NAME + ")*";
@@ -47,6 +47,10 @@ public class JavaReference {
 
 	public MethodReference method() {
 		return _method;
+	}
+	
+	public FileReference asFileReference() {
+		return FileReference.fromString(_clazz.replace('.', '/')+".java", '/');
 	}
 
 	@Override
