@@ -27,6 +27,8 @@ import de.flapdoodle.java2pandoc.sample.includes.AboutIncludes;
  * 
  * {@link AboutIncludes}
  * 
+ * {@link Paths}
+ * 
  * <--
  * 
  * @author mosmann

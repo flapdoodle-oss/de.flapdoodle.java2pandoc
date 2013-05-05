@@ -19,7 +19,21 @@
  */
 package de.flapdoodle.java2pandoc.sample.includes;
 
-
+/**
+ * -->
+ * %% Includes
+ * 
+ * Includes are supported only in comment blocks. You hat to write somethine like:
+ * 
+ * <code>
+ * 	{@link SomeClass}
+ * </code>
+ * 
+ * <--
+ * 
+ * @author mosmann
+ * 
+ */
 public class AboutIncludes {
 
 }

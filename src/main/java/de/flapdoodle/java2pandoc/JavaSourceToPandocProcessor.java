@@ -19,12 +19,16 @@
  */
 package de.flapdoodle.java2pandoc;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import de.flapdoodle.java2pandoc.block.Block;
 import de.flapdoodle.java2pandoc.block.TypedBlock;
@@ -38,6 +42,8 @@ import de.flapdoodle.java2pandoc.reference.JavaReference;
 public class JavaSourceToPandocProcessor {
 	
 	static final Pattern INCLUDE_PATTERN=Pattern.compile("^\\{\\@link\\s+(?<include>.*)\\}$");
+	static final Pattern IMPORT_LINE_PATTERN=Pattern.compile("^import (?<import>.*);$");
+	static final Pattern PACKAGE_LINE_PATTERN=Pattern.compile("^package (?<package>.*);$");
 	
 	private final IBlockToTypedBlockListConverter _blockToTypedBlockListConverter;
 	private final IReferenceResolver<FileReference> _referenceResolver;
@@ -54,19 +60,25 @@ public class JavaSourceToPandocProcessor {
 		
 		Optional<Block> file = _referenceResolver.resolve(startPoint.asFileReference());
 		if (file.isPresent()) {
-			List<TypedBlock> typedBlocks = _blockToTypedBlockListConverter.convert(file.get());
-			for (TypedBlock t : typedBlocks) {
-				processIncludes(t,writer);
-			}
+			process(file, writer);
 		} else {
 			throw new IllegalArgumentException("Could not find "+startPoint);
 		}
 	}
 
-	private void processIncludes(TypedBlock typedBlock, IBlockWriter writer) {
+	private void process(Optional<Block> file, IBlockWriter writer) {
+		Set<String> imports = imports(file.get());
+		
+		List<TypedBlock> typedBlocks = _blockToTypedBlockListConverter.convert(file.get());
+		for (TypedBlock t : typedBlocks) {
+			processIncludes(t,imports,writer);
+		}
+	}
+
+	private void processIncludes(TypedBlock typedBlock, Set<String> imports, IBlockWriter writer) {
 		switch (typedBlock.type()) {
 			case Text:
-				processIncludes(typedBlock.block(),writer);
+				processIncludes(typedBlock.block(),imports,writer);
 				break;
 			case Code:
 				writer.write(decorateCode(typedBlock.block()));
@@ -74,7 +86,7 @@ public class JavaSourceToPandocProcessor {
 		}
 	}
 
-	private void processIncludes(Block block, IBlockWriter writer) {
+	private void processIncludes(Block block, Set<String> imports, IBlockWriter writer) {
 		List<String> output=Lists.newArrayList();
 		for (String line : block.lines()) {
 			Optional<String> include = parseInclude(line);
@@ -82,7 +94,13 @@ public class JavaSourceToPandocProcessor {
 				writer.write(new Block(output));
 				output=Lists.newArrayList();
 				
-				// handle include
+//				System.out.println("Include: "+include.get());
+				Optional<Block> includeFile = resolve(include.get(),imports,writer);
+				if (includeFile.isPresent()) {
+					process(includeFile, writer);
+				} else {
+					throw new IllegalArgumentException("Could not resolve "+include.get()+" with "+imports);
+				}
 			} else {
 				output.add(line);
 			}
@@ -90,6 +108,52 @@ public class JavaSourceToPandocProcessor {
 		if (!output.isEmpty()) {
 			writer.write(new Block(output));
 		}
+	}
+	
+	private Optional<Block> resolve(String include, Set<String> imports, IBlockWriter writer) {
+//		System.out.println("Include '"+include+"' with "+imports);
+		
+		List<String> searchEntries=Lists.newArrayList();
+		if (include.contains(".")) {
+			searchEntries.add(include);
+		} else {
+			Optional<String> fullPath = exactMatch(include, imports);
+			if (fullPath.isPresent()) {
+				searchEntries.add(fullPath.get());
+			} else {
+				for (String i : imports) {
+					int idx=i.indexOf("*");
+					if (idx!=-1) {
+						searchEntries.add(i.substring(0,idx)+include);
+					}
+				}
+			}
+		}
+		return resolve(searchEntries,writer);
+	}
+
+	private Optional<Block> resolve(List<String> searchEntries, IBlockWriter writer) {
+//		System.out.println("Include "+searchEntries);
+		for (String e : searchEntries) {
+			Optional<JavaReference> javaRef = JavaReference.parse(e);
+			if (javaRef.isPresent()) {
+				Optional<Block> file = _referenceResolver.resolve(javaRef.get().asFileReference());
+				if (file.isPresent()) {
+					return file;
+				}
+			}
+		}
+		return Optional.absent();
+	}
+	
+	private Optional<String> exactMatch(String include, Set<String> imports) {
+		Optional<String> fullPath=Optional.absent();
+		for (String i : imports) {
+			if (i.endsWith(include)) {
+				fullPath=Optional.of(i);
+			}
+		}
+		return fullPath;
 	}
 	
 	private static Optional<String> parseInclude(String line) {
@@ -108,5 +172,21 @@ public class JavaSourceToPandocProcessor {
 		lines.add("~~~");
 		lines.add("");
 		return new Block(lines);
+	}
+
+	private static Set<String> imports(Block file) {
+		Set<String> ret = Sets.newHashSet();
+		for (String line : file.lines()) {
+			Matcher matcher = IMPORT_LINE_PATTERN.matcher(line);
+			if (matcher.matches()) {
+				ret.add(matcher.group("import"));
+			} else {
+				matcher = PACKAGE_LINE_PATTERN.matcher(line);
+				if (matcher.matches()) {
+					ret.add(matcher.group("package")+".*");
+				}
+			}
+		}
+		return ret;
 	}
 }
