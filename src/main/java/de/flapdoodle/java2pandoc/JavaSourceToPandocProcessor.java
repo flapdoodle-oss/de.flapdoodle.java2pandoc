@@ -20,6 +20,8 @@
 package de.flapdoodle.java2pandoc;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
@@ -34,6 +36,8 @@ import de.flapdoodle.java2pandoc.reference.JavaReference;
 
 
 public class JavaSourceToPandocProcessor {
+	
+	static final Pattern INCLUDE_PATTERN=Pattern.compile("^\\{\\@link\\s+(?<include>.*)\\}$");
 	
 	private final IBlockToTypedBlockListConverter _blockToTypedBlockListConverter;
 	private final IReferenceResolver<FileReference> _referenceResolver;
@@ -52,19 +56,48 @@ public class JavaSourceToPandocProcessor {
 		if (file.isPresent()) {
 			List<TypedBlock> typedBlocks = _blockToTypedBlockListConverter.convert(file.get());
 			for (TypedBlock t : typedBlocks) {
-				writer.write(decorate(t));
+				processIncludes(t,writer);
 			}
 		} else {
 			throw new IllegalArgumentException("Could not find "+startPoint);
 		}
 	}
 
-	private static Block decorate(TypedBlock typedBlock) {
+	private void processIncludes(TypedBlock typedBlock, IBlockWriter writer) {
 		switch (typedBlock.type()) {
+			case Text:
+				processIncludes(typedBlock.block(),writer);
+				break;
 			case Code:
-				return decorateCode(typedBlock.block());
+				writer.write(decorateCode(typedBlock.block()));
+				break;
 		}
-		return typedBlock.block();
+	}
+
+	private void processIncludes(Block block, IBlockWriter writer) {
+		List<String> output=Lists.newArrayList();
+		for (String line : block.lines()) {
+			Optional<String> include = parseInclude(line);
+			if (include.isPresent()) {
+				writer.write(new Block(output));
+				output=Lists.newArrayList();
+				
+				// handle include
+			} else {
+				output.add(line);
+			}
+		}
+		if (!output.isEmpty()) {
+			writer.write(new Block(output));
+		}
+	}
+	
+	private static Optional<String> parseInclude(String line) {
+		Matcher matcher = INCLUDE_PATTERN.matcher(line);
+		if (matcher.matches()) {
+			return Optional.of(matcher.group("include"));
+		}
+		return Optional.absent();
 	}
 
 	private static Block decorateCode(Block block) {
