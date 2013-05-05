@@ -60,7 +60,6 @@ public class TestJavaSourceToPandocProcessor {
 		
 		IBlockWriter writer=new SystemOutBlockWriter();
 		javaSourceToPandocProcessor.process(new JavaReference(Start.class.getName()), writer);
-		javaSourceToPandocProcessor.process(new JavaReference(Book.class.getName()), writer);
 	}
 
 	static class SystemOutBlockWriter implements IBlockWriter {

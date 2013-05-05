@@ -23,12 +23,19 @@ package de.flapdoodle.java2pandoc.sample.includes;
  * -->
  * %% Includes
  * 
- * Includes are supported only in comment blocks. You hat to write somethine like:
+ * Includes are supported only in comment blocks. You hat to write somethine like
  * 
  * <code>
  * 	{@link SomeClass}
  * </code>
  * 
+ * to process it as Include or
+ * 
+ * <code>
+ * 	{@linkplain SomeClass}
+ * </code>
+ * 
+ * to process it as Code Reference
  * <--
  * 
  * @author mosmann

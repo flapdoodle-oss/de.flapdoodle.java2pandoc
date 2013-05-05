@@ -19,6 +19,7 @@
  */
 package de.flapdoodle.java2pandoc.sample;
 
+import de.flapdoodle.java2pandoc.parser.TestBlockToBlockListConverter;
 import de.flapdoodle.java2pandoc.sample.includes.AboutIncludes;
 
 /**
@@ -28,6 +29,8 @@ import de.flapdoodle.java2pandoc.sample.includes.AboutIncludes;
  * {@link AboutIncludes}
  * 
  * {@link Paths}
+ * 
+ * {@link TestBlockToBlockListConverter}
  * 
  * <--
  * 
