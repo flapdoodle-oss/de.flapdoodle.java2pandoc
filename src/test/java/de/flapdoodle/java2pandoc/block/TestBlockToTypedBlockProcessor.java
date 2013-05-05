@@ -55,32 +55,6 @@ public class TestBlockToTypedBlockProcessor {
 		assertEquals(TypedBlock.Type.Code,typedBlocks.get(0).type());
 	}
 
-	@Test
-	public void removeLineComments() {
-		Optional<Block> unpackedComment = BlockToTypedBlockProcessor.unpackComment(new Block(Lists.newArrayList(" // Hu"," // Ha"," // He")));
-		assertTrue(unpackedComment.isPresent());
-		assertEquals("[ Hu,  Ha,  He]",unpackedComment.get().lines().toString());
-	}
-	
-	@Test
-	public void removeBlockComments() {
-		Optional<Block> unpackedComment = BlockToTypedBlockProcessor.unpackComment(new Block(Lists.newArrayList("   * Hu","   * Ha","   * He")));
-		assertTrue(unpackedComment.isPresent());
-		assertEquals("[ Hu,  Ha,  He]",unpackedComment.get().lines().toString());
-	}
-
-	@Test
-	public void notAValidBlockComments() {
-		Optional<Block> unpackedComment = BlockToTypedBlockProcessor.unpackComment(new Block(Lists.newArrayList("    * Hu","   * Ha","   * He")));
-		assertFalse(unpackedComment.isPresent());
-	}
-
-	@Test
-	public void notAValidLineComments() {
-		Optional<Block> unpackedComment = BlockToTypedBlockProcessor.unpackComment(new Block(Lists.newArrayList("    // Hu","   // Ha","   // He")));
-		assertFalse(unpackedComment.isPresent());
-	}
-
 	static class CollectingTypedBlockProcessor implements ITypedBlockProcessor {
 
 		List<TypedBlock> typedBlocks=Lists.newArrayList();

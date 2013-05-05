@@ -19,7 +19,7 @@
  */
 package de.flapdoodle.java2pandoc.block;
 
-
+@Deprecated
 public interface ITypedBlockProcessor {
 	void process(TypedBlock typedBlock);
 }

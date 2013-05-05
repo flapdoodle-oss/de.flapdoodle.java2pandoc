@@ -21,6 +21,7 @@ package de.flapdoodle.java2pandoc.block;
 
 import de.flapdoodle.java2pandoc.line.ILineProcessor;
 
+@Deprecated
 public class BlockToLineProcessor implements IBlockProcessor {
 
 	private final ILineProcessor _lineProcessor;

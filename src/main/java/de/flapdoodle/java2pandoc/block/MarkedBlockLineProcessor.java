@@ -19,7 +19,6 @@
  */
 package de.flapdoodle.java2pandoc.block;
 
-import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
@@ -32,6 +31,7 @@ import de.flapdoodle.java2pandoc.line.ILineProcessor;
 import de.flapdoodle.java2pandoc.line.matcher.ILineMatcher;
 import de.flapdoodle.java2pandoc.line.matcher.LineMatch;
 
+@Deprecated
 public class MarkedBlockLineProcessor implements ILineProcessor {
 
 	private final IBlockProcessor _blockProcessor;

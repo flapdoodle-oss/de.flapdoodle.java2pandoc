@@ -19,8 +19,8 @@
  */
 package de.flapdoodle.java2pandoc.line;
 
-
-
+@Deprecated
 public interface ILineProcessor {
+
 	void process(String line);
 }
