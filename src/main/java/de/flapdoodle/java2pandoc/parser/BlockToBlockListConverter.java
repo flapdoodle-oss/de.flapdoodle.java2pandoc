@@ -28,7 +28,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import de.flapdoodle.java2pandoc.block.Block;
-import de.flapdoodle.java2pandoc.block.IBlockProcessor;
 import de.flapdoodle.java2pandoc.exceptions.BlockProcessingException;
 import de.flapdoodle.java2pandoc.line.matcher.ILineMatcher;
 import de.flapdoodle.java2pandoc.line.matcher.LineMatch;

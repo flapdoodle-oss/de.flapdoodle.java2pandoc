@@ -29,14 +29,8 @@ import org.junit.Test;
 import com.google.common.base.Optional;
 
 import de.flapdoodle.java2pandoc.block.Block;
-import de.flapdoodle.java2pandoc.block.BlockToLineProcessor;
-import de.flapdoodle.java2pandoc.block.BlockToTypedBlockProcessor;
-import de.flapdoodle.java2pandoc.block.IBlockProcessor;
-import de.flapdoodle.java2pandoc.block.ITypedBlockProcessor;
-import de.flapdoodle.java2pandoc.block.MarkedBlockLineProcessor;
 import de.flapdoodle.java2pandoc.block.TypedBlock;
 import de.flapdoodle.java2pandoc.io.MavenSourceFileResolver;
-import de.flapdoodle.java2pandoc.line.ILineProcessor;
 import de.flapdoodle.java2pandoc.line.matcher.JavaSourceLineMatcher;
 import de.flapdoodle.java2pandoc.parser.BlockToBlockListConverter;
 import de.flapdoodle.java2pandoc.parser.BlockToTypedBlockConverter;
