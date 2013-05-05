@@ -37,7 +37,7 @@ import de.flapdoodle.java2pandoc.block.TypedBlock;
 public class BlockToTypedBlockConverter implements IBlockToTypedBlockConverter {
 
 	static Pattern LINE_COMMENT_PATTERN = Pattern.compile("(^\\s*//)");
-	static Pattern BLOCK_COMMENT_PATTERN = Pattern.compile("(^\\s*\\*)");
+	static Pattern BLOCK_COMMENT_PATTERN = Pattern.compile("(^\\s*\\*\\s)");
 	
 	@Override
 	public TypedBlock convert(Block block) {

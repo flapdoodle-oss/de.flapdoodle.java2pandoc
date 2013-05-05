@@ -67,7 +67,7 @@ public class TestBlockToTypedBlockConverter {
 		Optional<Block> unpackedComment = BlockToTypedBlockConverter.unpackComment(new Block(Lists.newArrayList("   * Hu",
 				"   * Ha", "   * He")));
 		assertTrue(unpackedComment.isPresent());
-		assertEquals("[ Hu,  Ha,  He]", unpackedComment.get().lines().toString());
+		assertEquals("[Hu, Ha, He]", unpackedComment.get().lines().toString());
 	}
 
 	@Test

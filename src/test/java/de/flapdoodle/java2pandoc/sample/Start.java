@@ -34,4 +34,10 @@ import de.flapdoodle.java2pandoc.sample.includes.AboutIncludes;
  */
 public class Start {
 
+	// line comments
+	//can start as soon as possible
+
+	/**
+	 * block comments not
+	 */
 }
