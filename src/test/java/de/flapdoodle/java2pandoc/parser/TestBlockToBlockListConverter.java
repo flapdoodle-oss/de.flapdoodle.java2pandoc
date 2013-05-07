@@ -31,13 +31,15 @@ import com.google.common.collect.Lists;
 
 import de.flapdoodle.java2pandoc.block.Block;
 import de.flapdoodle.java2pandoc.line.matcher.JavaSourceLineMatcher;
+
 /**
  * -->
  * %% Block List Converter
  * 
  * <--
+ * 
  * @author mosmann
- *
+ * 
  */
 public class TestBlockToBlockListConverter {
 
@@ -48,15 +50,15 @@ public class TestBlockToBlockListConverter {
 				JavaSourceLineMatcher.endMatcher());
 
 		List<String> lines = Lists.newArrayList();
-		
+
 		lines.add(" // -->");
 		lines.add(" // shift one left");
 		lines.add(" // this line too");
 		lines.add(" // <--");
-		
+
 		List<Block> blocks = converter.convert(new Block(lines));
 
-		assertEquals(1,blocks.size());
+		assertEquals(1, blocks.size());
 		Block block = blocks.get(0);
 		assertNotNull(block);
 		assertEquals("// shift one left", block.lines().get(0));
