@@ -43,6 +43,9 @@ public class JavaSourceToPandocProcessor {
 	static final Pattern IMPORT_LINE_PATTERN=Pattern.compile("^import (?<import>.*);$");
 	static final Pattern PACKAGE_LINE_PATTERN=Pattern.compile("^package (?<package>.*);$");
 	
+	static final Pattern CODE_BEGIN_IN_COMMENT_PATTERN=Pattern.compile("^<code>$");
+	static final Pattern CODE_END_IN_COMMENT_PATTERN=Pattern.compile("^</code>$");
+	
 	private final IBlockToTypedBlockListConverter _blockToTypedBlockListConverter;
 	private final IReferenceResolver<FileReference> _referenceResolver;
 	
@@ -52,15 +55,19 @@ public class JavaSourceToPandocProcessor {
 	}
 	
 	public void process(JavaReference startPoint,IBlockWriter writer) {
-		if (startPoint.method()!=null) {
-			throw new IllegalArgumentException("JavaReference with method is not supported at this point");
-		}
-		
-		Optional<Block> file = _referenceResolver.resolve(startPoint.asFileReference());
-		if (file.isPresent()) {
-			process(file, writer);
-		} else {
-			throw new IllegalArgumentException("Could not find "+startPoint);
+		try {
+			if (startPoint.method()!=null) {
+				throw new IllegalArgumentException("JavaReference with method is not supported at this point");
+			}
+			
+			Optional<Block> file = _referenceResolver.resolve(startPoint.asFileReference());
+			if (file.isPresent()) {
+				process(file, writer);
+			} else {
+				throw new IllegalArgumentException("Could not find "+startPoint);
+			}
+		} finally {
+			writer.close();
 		}
 	}
 
@@ -76,7 +83,7 @@ public class JavaSourceToPandocProcessor {
 	private void processIncludes(TypedBlock typedBlock, Set<String> imports, IBlockWriter writer) {
 		switch (typedBlock.type()) {
 			case Text:
-				processIncludes(typedBlock.block(),imports,writer);
+				processIncludes(formatCodeInComment(typedBlock.block()),imports,writer);
 				break;
 			case Code:
 				writer.write(decorateCode(typedBlock.block()));
@@ -170,6 +177,10 @@ public class JavaSourceToPandocProcessor {
 		lines.add("~~~");
 		lines.add("");
 		return new Block(lines);
+	}
+	
+	private static Block formatCodeInComment(Block block) {
+		return block;
 	}
 
 	private static Set<String> imports(Block file) {

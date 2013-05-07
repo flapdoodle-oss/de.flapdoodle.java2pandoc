@@ -30,11 +30,23 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 import de.flapdoodle.java2pandoc.block.Block;
+import de.flapdoodle.java2pandoc.line.matcher.ILineMatcher;
 import de.flapdoodle.java2pandoc.line.matcher.JavaSourceLineMatcher;
 
 /**
  * -->
- * %% Block List Converter
+ * ## Sample of Test Code in Documentation
+ * 
+ * You can set the mark to the beginning of the code block which should show up in your documentation.
+ * You need the second mark on the end of the block.
+ * 
+ * <code>
+ * int a=2;
+ * // -->
+ * String s="This is the code which will show up";
+ * // <--
+ * s="and this not";
+ * </code>
  * 
  * <--
  * 
@@ -43,11 +55,19 @@ import de.flapdoodle.java2pandoc.line.matcher.JavaSourceLineMatcher;
  */
 public class TestBlockToBlockListConverter {
 
+	/**
+	 * -->
+	 * ### Test Code for a simple Comment
+	 * <--
+	 * 
+	 * @throws ParseException
+	 */
 	@Test
 	public void simpleComment() throws ParseException {
 		// -->
-		BlockToBlockListConverter converter = new BlockToBlockListConverter(JavaSourceLineMatcher.startMatcher(),
-				JavaSourceLineMatcher.endMatcher());
+		ILineMatcher startMatcher = JavaSourceLineMatcher.startMatcher();
+		ILineMatcher endMatcher = JavaSourceLineMatcher.endMatcher();
+		BlockToBlockListConverter converter = new BlockToBlockListConverter(startMatcher, endMatcher);
 
 		List<String> lines = Lists.newArrayList();
 
@@ -66,10 +86,19 @@ public class TestBlockToBlockListConverter {
 		// <--
 	}
 
+	/**
+	 * -->
+	 * ### Test Code for an embedded Marker
+	 * <--
+	 * 
+	 * @throws ParseException
+	 */
 	@Test
 	public void embeddedComment() throws ParseException {
-		BlockToBlockListConverter converter = new BlockToBlockListConverter(JavaSourceLineMatcher.startMatcher(),
-				JavaSourceLineMatcher.endMatcher());
+		// -->
+		ILineMatcher startMatcher = JavaSourceLineMatcher.startMatcher();
+		ILineMatcher endMatcher = JavaSourceLineMatcher.endMatcher();
+		BlockToBlockListConverter converter = new BlockToBlockListConverter(startMatcher, endMatcher);
 
 		List<String> lines = Lists.newArrayList();
 
@@ -93,5 +122,6 @@ public class TestBlockToBlockListConverter {
 		assertEquals("	// shift one left (embedded)", block.lines().get(1));
 		assertEquals("	// this line too (embedded)", block.lines().get(2));
 		assertEquals("// this line too", block.lines().get(3));
+		// <--
 	}
 }

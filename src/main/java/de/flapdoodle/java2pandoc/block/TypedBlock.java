@@ -44,4 +44,43 @@ public class TypedBlock {
 	public Block block() {
 		return _block;
 	}
+
+	@Override
+	public String toString() {
+		return "{"+_type+":"+_block+"}";
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((_block == null)
+				? 0
+				: _block.hashCode());
+		result = prime * result + ((_type == null)
+				? 0
+				: _type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TypedBlock other = (TypedBlock) obj;
+		if (_block == null) {
+			if (other._block != null)
+				return false;
+		} else if (!_block.equals(other._block))
+			return false;
+		if (_type != other._type)
+			return false;
+		return true;
+	}
+	
+	
 }
